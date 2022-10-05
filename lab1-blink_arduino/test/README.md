@@ -1,15 +1,3 @@
-
-This directory is intended for PlatformIO Test Runner and project tests.
-
-Unit Testing is a software testing method by which individual units of
-source code, sets of one or more MCU program modules together with associated
-control data, usage procedures, and operating procedures, are tested to
-determine whether they are fit for use. Unit testing finds problems early
-in the development cycle.
-
-More information about PlatformIO Unit Testing:
-- https://docs.platformio.org/en/latest/advanced/unit-testing/index.html
-
 # Lab 1: Filip Voch
 
 ### Morse code
@@ -53,4 +41,4 @@ int main(void)
 
 2. Scheme of Morse code application, i.e. connection of AVR device, LED, resistor, and supply voltage. The image can be drawn on a computer or by hand. Always name all components and their values!
 
-   ![your figure]()
+   ![your figure](images/IMG_0850.jpg)
