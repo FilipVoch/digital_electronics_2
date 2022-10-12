@@ -20,7 +20,7 @@
     * @note  t_OVF = 1/F_CPU * prescaler * 2^n where n = 8, F_CPU = 16 MHz
     */
    #define TIM2_stop()           TCCR2B &= ~((1<<CS22) | (1<<CS21) | (1<<CS20));
-   
+
    /** @brief Set overflow 4ms, prescaler 001 --> 1 */
    #define TIM2_overflow_16u()   TCCR2B &= ~((1<<CS22) | (1<<CS21)); TCCR2B |= (1<<CS20);
    /** @brief Set overflow 33ms, prescaler 010 --> 8 */
@@ -29,9 +29,9 @@
    #define TIM2_overflow_512u() TCCR2B &= ~(1<<CS22); TCCR2B |= (1<<CS21) | (1<<CS20);
    /** @brief Set overflow 262ms, prescaler 100 --> 64 */
    #define TIM2_overflow_1ms() TCCR2B &= ~(1<<CS22); TCCR2B |= (1<<CS21) | (1<<CS20);
-   /** @brief Set overflow 1s, prescaler 101 --> 256 */
+   /** @brief Set overflow 1s, prescaler 101 --> 128 */
    #define TIM2_overflow_2ms()    TCCR2B &= ~((1<<CS21) | (1<<CS20)); TCCR2B |= (1<<CS22);
-   /** @brief Set overflow 4s, prescaler // 110 --> 1024 */
+   /** @brief Set overflow 4s, prescaler // 110 --> 256 */
    #define TIM2_overflow_4ms()    TCCR2B &= ~(1<<CS21); TCCR2B |= (1<<CS22) | (1<<CS20);
    /** @brief Set overflow 4s, prescaler // 111 --> 1024 */
    #define TIM2_overflow_16ms()    TCCR2B &= ~(1<<CS21); TCCR2B |= (1<<CS22) | (1<<CS20);
