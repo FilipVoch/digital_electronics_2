@@ -87,6 +87,7 @@
  */
 // WRITE YOUR CODE HERE
 #define TIM2_stop()           TCCR2B &= ~((1<<CS22) | (1<<CS21) | (1<<CS20));
+
 /** @brief Set overflow 4ms, prescaler 001 --> 1 */
 #define TIM2_overflow_16u()   TCCR2B &= ~((1<<CS22) | (1<<CS21)); TCCR2B |= (1<<CS20);
 /** @brief Set overflow 33ms, prescaler 010 --> 8 */
