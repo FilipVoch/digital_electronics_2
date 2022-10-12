@@ -40,6 +40,9 @@ int main(void)
     // Set the overflow prescaler to 262 ms and enable interrupt
     TIM1_overflow_262ms();
     TIM1_overflow_interrupt_enable();
+    TIM2_overflow_16ms();
+    TIM2_overflow_interrupt_enable();
+
 
     // Enables interrupts by setting the global interrupt mask
     sei();
