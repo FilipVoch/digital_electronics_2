@@ -61,7 +61,7 @@ int main(void)
  * Function: Timer/Counter1 overflow interrupt
  * Purpose:  Toggle on-board LED.
  **********************************************************************/
-ISR(TIMER1_OVF_vect)
+ISR(TIMER2_OVF_vect)
 {
     PORTB = PORTB ^ (1<<LED_GREEN);
 }
