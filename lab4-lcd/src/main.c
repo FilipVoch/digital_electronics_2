@@ -130,11 +130,14 @@ ISR(TIMER2_OVF_vect)
     static uint8_t tenths = 0;  // Tenths of a second
     static uint8_t seconds = 0;  // Seconds
     static uint8_t minutes = 0;  // Minutes
+    static uint8_t mocnina = 0;
     char string[2];             // String for converted numbers by itoa()
 
-    lcd_gotoxy(0, 0);
-    lcd_puts("Timer");
-    lcd_putc(':');
+
+    mocnina = seconds*seconds;
+    itoa(mocnina, string, 10);
+    lcd_gotoxy(10,0);
+    lcd_puts(string);
 
     no_of_overflows++;
     if (no_of_overflows >= 6)
@@ -162,44 +165,45 @@ ISR(TIMER2_OVF_vect)
         }
         itoa(tenths, string, 10);  // Convert decimal value to string
         // Display "00:00.tenths"
-        lcd_gotoxy(13, 0);
+        lcd_gotoxy(6, 0);
         lcd_puts(string);
 
-        lcd_gotoxy(12,0);
+        lcd_gotoxy(5,0);
         lcd_putc('.');
 
         if (seconds < 10)
         {
           itoa(seconds, string, 10);
-          lcd_gotoxy(11,0);
+          lcd_gotoxy(4,0);
           lcd_puts(string);
-          lcd_gotoxy(10,0);
+          lcd_gotoxy(3,0);
           lcd_putc('0');
         }
         else{
           itoa(seconds, string, 10);
-          lcd_gotoxy(10,0);
+          lcd_gotoxy(3,0);
           lcd_puts(string);
         }
         
-        lcd_gotoxy(9,0);
+        lcd_gotoxy(2,0);
         lcd_putc(':');
 
         if (minutes < 10)
         {
           itoa(minutes, string, 10);
-          lcd_gotoxy(8,0);
+          lcd_gotoxy(1,0);
           lcd_puts(string);
-          lcd_gotoxy(7,0);
+          lcd_gotoxy(0,0);
           lcd_putc('0');
         }
         else{
           itoa(minutes, string, 10);
-          lcd_gotoxy(7,0);
+          lcd_gotoxy(0,0);
           lcd_puts(string);
         }
         
         lcd_gotoxy(15,1);
+
     }
     // Else do nothing and exit the ISR
 }
