@@ -109,18 +109,49 @@ ISR(ADC_vect)
         lcd_gotoxy(8,0);
         lcd_putc('0');
       }else{
-        lcd_gotoxy(10,0);
+        if(value>9)
+        {
+          lcd_gotoxy(10,0);
+          lcd_puts(string);
+          lcd_gotoxy(8,0);
+          lcd_putc('0');
+          lcd_gotoxy(9,0);
+          lcd_putc('0');
+        }else{
+          lcd_gotoxy(11,0);
+          lcd_puts(string);
+          lcd_gotoxy(8,0);
+          lcd_putc('0');
+          lcd_gotoxy(9,0);
+          lcd_putc('0');
+          lcd_gotoxy(10,0);
+          lcd_putc('0');
+        }
+      }
+    }
+    if(value > 255)
+    {
+      itoa(value, string, 16);
+      lcd_gotoxy(13,0);
+      lcd_puts(string);
+    }else{
+      if(value > 15)
+      {
+        itoa(value, string, 16);
+        lcd_gotoxy(14,0);
         lcd_puts(string);
-        lcd_gotoxy(8,0);
+        lcd_gotoxy(13,0);
         lcd_putc('0');
-        lcd_gotoxy(9,0);
+      }else{
+        itoa(value, string, 16);
+        lcd_gotoxy(15,0);
+        lcd_puts(string);
+        lcd_gotoxy(13,0);
+        lcd_putc('0');
+        lcd_gotoxy(14,0);
         lcd_putc('0');
       }
     }
-    
-    itoa(value, string, 16);
-    lcd_gotoxy(13,0);
-    lcd_puts(string);
 
     if(value < 25)
     {
