@@ -1,5 +1,4 @@
-# Lab 5: INSERT_YOUR_FIRSTNAME INSERT_YOUR_LASTNAME
-
+# Lab 5: Filip Voch
 ### Analog-to-Digital Conversion
 
 1. Complete table with voltage divider, calculated, and measured ADC values for all five push buttons.
@@ -9,9 +8,9 @@
    | Right  | 0&nbsp;V | 0   | 0 | 0 |
    | Up     | 0.495&nbsp;V | 101 |  |  |
    | Down   | 1.203&nbsp;V | 246 |  |  |
-   | Left   |  |  |  |  |
-   | Select |  |  |  |  |
-   | none   |  |  |  |  |
+   | Left   | 1.97 V | 403 |  |  |
+   | Select | 3.181 V | 651 |  |  |
+   | none   | 5 V | 1023 |  |  |
 
 ### Temperature meter
 
