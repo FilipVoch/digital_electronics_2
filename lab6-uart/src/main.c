@@ -48,10 +48,14 @@ int main(void)
     // Put strings to ringbuffer for transmitting via UART
     //uart_puts("Print one line... ");
     //uart_puts("done\r\n");
+
     uart_puts("\x1b[4;32m");  // 4: underline style; 32: green foreground
     uart_puts("This is all Green and Underlined\r\n");
     uart_puts("\x1b[0m");     // 0: reset all attributes
     uart_puts("This is Normal text again\r\n");
+
+    
+
     // Infinite loop
     while (1)
     {
@@ -72,7 +76,7 @@ int main(void)
 
 
 ISR(TIMER1_OVF_vect)
-{
+{   
     uint8_t value;
     char string[8];
 
