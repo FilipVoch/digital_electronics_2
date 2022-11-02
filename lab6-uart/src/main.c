@@ -46,9 +46,12 @@ int main(void)
     sei();
 
     // Put strings to ringbuffer for transmitting via UART
-    uart_puts("Print one line... ");
-    uart_puts("done\r\n");
-
+    //uart_puts("Print one line... ");
+    //uart_puts("done\r\n");
+    uart_puts("\x1b[4;32m");  // 4: underline style; 32: green foreground
+    uart_puts("This is all Green and Underlined\r\n");
+    uart_puts("\x1b[0m");     // 0: reset all attributes
+    uart_puts("This is Normal text again\r\n");
     // Infinite loop
     while (1)
     {
@@ -70,6 +73,28 @@ int main(void)
 
 ISR(TIMER1_OVF_vect)
 {
-    // Transmit UART string(s)
-    uart_puts("Paris\r\n");
+    uint8_t value;
+    char string[8];
+
+    value = uart_getc();
+    if (value |= '\0'){
+      uart_puts("Pressed key: ");
+      uart_putc(value);
+      uart_putc('\t');
+
+      uart_puts("Dec value: ");
+      itoa(value, string, 10);
+      uart_puts(string);
+      uart_putc('\t');
+
+      uart_puts("Bin value: ");
+      itoa(value, string, 2);
+      uart_puts(string);
+      uart_putc('\t');
+
+      uart_puts("Hex value: ");
+      itoa(value, string, 16);
+      uart_puts(string);
+      uart_putc('\r\n');
+    }
 }
