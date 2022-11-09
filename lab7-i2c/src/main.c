@@ -26,6 +26,21 @@
 #include <uart.h>           // Peter Fleury's UART library
 #include <stdlib.h>         // C library. Needed for number conversions
 
+    static uint8_t sla = 104;  // I2C Slave address
+    uint8_t ack;             // ACK response from Slave
+    char string[3];          // String for converting numbers by itoa()
+
+    struct Air_parameters_structure {
+      uint8_t humid_int;
+      uint8_t humid_dec;
+      uint8_t temp_int;
+      uint8_t temp_dec;
+      uint8_t checksum;
+    } air;
+
+    
+/* Global variables --------------------------------------------------*/
+// Declaration of "air" variable with structure "Air_parameters_structure"
 
 /* Function definitions ----------------------------------------------*/
 /**********************************************************************
@@ -45,15 +60,65 @@ int main(void)
 
     // Configure 16-bit Timer/Counter1 to test one I2C address
     // Set prescaler to 33 ms and enable interrupt
-    TIM1_overflow_33ms();
+    TIM1_overflow_1s();
     TIM1_overflow_interrupt_enable();
 
     // Enables interrupts by setting the global interrupt mask
     sei();
 
     // Put strings to ringbuffer for transmitting via UART
-    uart_puts("Scan I2C bus for devices:\r\n");
+    //uart_puts("Scan I2C bus for devices:\r\n");
 
+    
+    // Start communication, transmit I2C Slave address, get result,
+    // and Stop communication
+
+    /*//0x00 Humidity integer part
+    ack = twi_start(sla, TWI_WRITE);
+    twi_write(0x00);
+    twi_stop();
+
+    ack = twi_start(sla, TWI_READ);
+    air.humid_int=twi_read_nack();
+    twi_stop();
+
+    //0x01 Humidity decimal part
+    ack = twi_start(sla, TWI_WRITE);
+    twi_write(0x01);
+    twi_stop();
+
+    ack = twi_start(sla, TWI_READ);
+    air.humid_dec=twi_read_nack();
+    twi_stop();
+
+    //0x02 Temperature integer part
+    ack = twi_start(sla, TWI_WRITE);
+    twi_write(0x02);
+    twi_stop();
+
+    ack = twi_start(sla, TWI_READ);
+    air.temp_int=twi_read_nack();
+    twi_stop();
+
+    //0x03 Temperature decimal part
+    ack = twi_start(sla, TWI_WRITE);
+    twi_write(0x04);
+    twi_stop();
+
+    ack = twi_start(sla, TWI_READ);
+    air.temp_dec=twi_read_nack();
+    twi_stop();
+
+    //0x04 Checksum
+    ack = twi_start(sla, TWI_WRITE);
+    twi_write(0x04);
+    twi_stop();
+
+    ack = twi_start(sla, TWI_READ);
+    air.checksum=twi_read_nack();
+    twi_stop();*/
+    
+    
     // Infinite loop
     while (1)
     {
@@ -73,14 +138,83 @@ int main(void)
  **********************************************************************/
 ISR(TIMER1_OVF_vect)
 {
-    static uint8_t sla = 8;  // I2C Slave address
-    uint8_t ack;             // ACK response from Slave
-    char string[3];          // String for converting numbers by itoa()
+    /*itoa(air.humid_int,string,10);
+    uart_puts("Humid: ");
+    uart_puts(string);
+    uart_putc('.');
+    itoa(air.humid_dec,string,10);
+    uart_puts(string);
+    uart_puts("\r\n");
+    itoa(air.temp_int,string,10);
+    uart_puts("Temp: ");
+    uart_puts(string);
+    uart_putc('.');
+    itoa(air.temp_dec,string,10);
+    uart_puts(string);
+    uart_puts("\r\n\n");*/
+    //itoa(air.checksum,string,10);
+    //uart_puts("Checksum: ");
+    //uart_puts(string);
+    //uart_puts("\r\n\n\n");
 
-    // Start communication, transmit I2C Slave address, get result,
-    // and Stop communication
+    struct Time_parameters_structure {
+      uint8_t seconds;
+      uint8_t minutes;
+      uint8_t hours;
+    } time;
+
+    //0x00 seconds
     ack = twi_start(sla, TWI_WRITE);
+    twi_write(0x00);
     twi_stop();
+
+    ack = twi_start(sla, TWI_READ);
+    time.seconds=twi_read_nack();
+    twi_stop();
+
+    //0x01 minutes
+    ack = twi_start(sla, TWI_WRITE);
+    twi_write(0x01);
+    twi_stop();
+
+    ack = twi_start(sla, TWI_READ);
+    time.minutes=twi_read_nack();
+    twi_stop();
+
+    //0x02 hours
+    ack = twi_start(sla, TWI_WRITE);
+    twi_write(0x02);
+    twi_stop();
+
+    ack = twi_start(sla, TWI_READ);
+    time.hours=twi_read_nack();
+    twi_stop();
+
+    itoa(time.hours,string,10);
+    uart_puts(string);
+    uart_putc(':');
+    itoa(time.minutes,string,10);
+    uart_puts(string);
+    uart_putc(':');
+    itoa(time.seconds,string,10);
+    uart_puts(string);
+    uart_puts("\r\n");
+
+
+    /*if(ack==0)
+    {
+      itoa(sla,string,10);
+      uart_puts("Device of address: ");
+      uart_puts(string);
+      uart_puts("\r\n");
+    }
+    sla++;
+
+    if(sla > 119)
+    {
+      sla = 8;
+      uart_puts("\r\n\nRepeating scan...\r\n");
+    }*/
 
     // Test ACK/NACK value obtained from I2C bus and send info to UART
     
