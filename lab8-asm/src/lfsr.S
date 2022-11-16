@@ -59,7 +59,7 @@ lfsr4_fibonacci_asm:
                            ; | x | x | x | x | x | x | x | 4 |
                            ; +---+---+---+---+---+---+---+---+
 
-    bst in_out_reg, 2      ; Copy SECOND tap to T-flag bit...
+    bst in_out_reg, 0      ; Copy SECOND tap to T-flag bit...
     bld temp1, 0           ; ...and then to temp1 at position 0
                            ; temp1:                        0
                            ; +---+---+---+---+---+---+---+---+
