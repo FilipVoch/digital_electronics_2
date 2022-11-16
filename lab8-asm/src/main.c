@@ -150,7 +150,14 @@ ISR(TIMER1_OVF_vect)
     uart_puts(" ");
     value = lfsr4_fibonacci_asm(value);
     no_of_values++;
-    
+    if(value==0)
+    {
+      itoa(no_of_values,string,10);
+      uart_puts("\r\nNumber of values: ");
+      uart_puts(string);
+      uart_puts("\r\n\n");
+      no_of_values=0;
+    }
     // If LFSR value is equal to 0 then print length info and start again
 
 }
