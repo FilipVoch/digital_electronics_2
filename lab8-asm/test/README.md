@@ -1,4 +1,4 @@
-# Lab 8: INSERT_YOUR_FIRSTNAME INSERT_YOUR_LASTNAME
+# Lab 8: Filip Voch
 
 ### Instruction set
 
@@ -6,10 +6,10 @@
 
    | **Instruction** | **Binary opcode** | **Hex opcode** | **Compiler Hex opcode** |
    | :-- | :-: | :-: | :-: |
-   | `add r24, r0` |  |  |  |
-   | `com r26` |  |  |  |
-   | `eor r26, r27` |  |  |  |
-   | `mul r22, r20` |  |  |  |
+   | `add r24, r0` | `0000_1101_1000_0000` |  |  |
+   | `com r26` | `1001_0101_1010_0000` |  |  |
+   | `eor r26, r27` | `0010_0111_1010_1011` |  |  |
+   | `mul r22, r20` | `1001_1111_0110_0100` |  |  |
    | `ret` | `1001_0101_0000_1000` | `95 08` |  |
 
 ### 4-bit LFSR
