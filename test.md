@@ -7,11 +7,19 @@
     if (value > 600)
     {
     CursorX++;
+    if (CursorX > 6)
+    {
+    CursorX = 0;
+    }
     lcd_gotoxy(CursorX, CursorY);
     }
     else if (value < 400)
     {
     CursorX--;
+    if (CursorX < 0)
+    {
+    CursorX = 6;
+    }
     lcd_gotoxy(CursorX, CursorY);
     }
     else
