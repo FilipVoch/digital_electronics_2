@@ -35,13 +35,6 @@ V stave pokoja, keď nie je s Joy Stickom manipulované nadobúda výstupné nap
 ![LCD_pinout](https://user-images.githubusercontent.com/99683944/205039905-d8dde4cb-79b3-4df0-93b8-fbf0b47b5101.png)
 
 
-### Rotačný enkodér
-Rotačný enkodér je typ pozičného senzoru, používaný na detekciu pohybu na základe zmeny uhlu pri jeho otáčaní. Jeho veľkou výhodou oproti bežnému rotačnému potenciometru založenom na princípe zmeny odporu je fakt, že dokáže zaznamenať tridsať zmien polohy na otáčku, pričom jeho rozsah nie je obmedzený na 360 stupňov, ale je možné ho otáčať v podstate neobmedzene. Toto je realizované vďaka dômyselnému systému založenom na rotačnom disku obsahujúcom rovnomerne rozložené kontaktné plochy pripojené na spoločný pin C a dva separátne piny A a B.
-![emnkoder princip](https://user-images.githubusercontent.com/99683944/205701989-74b76092-c505-4c1f-9460-7877281fd28f.png)
-Enkodér generuje dva obdĺžnikové signály nazývané clock (pin CLK) a data (pin DT), ktoré sú generované vždy keď je uzavretý kontakt s kontaktnou plochou. To znamená, že na samotnú detekciu rotácie enkodéru stačí, jeden zo signálov, no v praktickom využití skoro vždy potrebujeme určiť i smer rotácie. Princíp na ktorom, je toto určovanie založené vychádza z faktu, že pri otáčaní senzoru v smere hodinových ručičiek predbieha clock signál data signál o fázu 90 stupňov a naopak.
-![encoderSignaly](https://user-images.githubusercontent.com/99683944/205702402-56fd4a53-ed80-4a50-87b9-a4a589fb50a1.png)
-Čip ATmega328P, ktorým je doska Arduina UNO osadená následne túto zmenu fáze deteguje a podľa toho rozhoduje o inkrempentácii, či dekrementácii premennej. Tieto vlastnosti robia z rotačného enkodéru ideálnu súčiastku pre projekty, v ktorých je potreba jednoduchá orientácia v menu, ovládanie servomotorov a iné aplikácie, kde 360 stupňový rozsah rotačných potenciometrov nevystačí. 
-![encoder](https://user-images.githubusercontent.com/99683944/205036515-bb7ead21-4897-4920-b1be-1d6879a7a050.png)
 
 ### Finálny pinout projektu
 
