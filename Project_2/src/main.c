@@ -10,11 +10,10 @@
  * This work is licensed under the terms of the MIT license.
  * 
  **********************************************************************/
-#define ENCODER_SW PD3
 #define JOYSTICK_SW PD2
 
-#define ENCODER_A PB4
-#define ENCODER_B PB5
+#define SERVO_X PB2
+#define SERVO_Y PB3
 
 /* Includes ----------------------------------------------------------*/
 #include <avr/io.h>         // AVR device-specific IO definitions
@@ -24,12 +23,11 @@
 #include <lcd.h>            // Peter Fleury's LCD library
 #include <stdlib.h>         // C library. Needed for number conversions
 
+volatile int stepX;
+volatile int stepY;
 
-
-#define PD3 3          // In Arduino world, PB5 is called "13"
-#define PD2 2
-#define PB4 12
-#define PB5 13
+#define PB2 10        // In Arduino world, PB5 is called "13"
+#define PB3 11 
 
 /* Function definitions ----------------------------------------------*/
 /**********************************************************************
@@ -49,10 +47,9 @@ int main(void)
     lcd_gotoxy(5, 1); lcd_puts("y:");
     
     GPIO_mode_input_pullup(&DDRD, JOYSTICK_SW);
-    GPIO_mode_input_pullup(&DDRD, ENCODER_SW);
 
-    GPIO_mode_input_nopull(&DDRB, ENCODER_A);
-    GPIO_mode_input_nopull(&DDRB, ENCODER_B);
+    GPIO_mode_output(&DDRB, SERVO_X);
+    GPIO_mode_output(&DDRB, SERVO_Y);
     
 
 
@@ -78,8 +75,8 @@ int main(void)
 
     // Configure 16-bit Timer/Counter1 to start ADC conversion
     // Set prescaler to 33 ms and enable overflow interrupt
-    TIM1_overflow_33ms();
-    TIM1_overflow_interrupt_enable();
+    TIM0_overflow_16us();
+    TIM0_overflow_interrupt_enable();
 
     // Enables interrupts by setting the global interrupt mask
     sei();
@@ -98,11 +95,13 @@ int main(void)
 
 /* Interrupt service routines ----------------------------------------*/
 /**********************************************************************
- * Function: Timer/Counter1 overflow interrupt
+ * Function: Timer/Counter0 overflow interrupt
  * Purpose:  Use single conversion mode and start conversion every 100 ms.
  **********************************************************************/
-ISR(TIMER1_OVF_vect)
+ISR(TIMER0_OVF_vect)
 {
+   static uint16_t no_of_overflows = 0;
+   
    // ADC
    static uint8_t channel = 0;
    if (channel == 0)
@@ -120,38 +119,104 @@ ISR(TIMER1_OVF_vect)
    // Start ADC conversion
     ADCSRA |= (1 << ADSC);
 
-
-
-    // Switche
-
-    static uint8_t encodeButtVal = 0;
-    encodeButtVal = GPIO_read(&PIND, ENCODER_SW);
-
     static uint8_t buttonVal = 0;
     buttonVal = GPIO_read(&PIND, JOYSTICK_SW);
 
-    if (buttonVal == 0)
+    no_of_overflows ++;
+
+  if (stepX == 0)
+  {
+    GPIO_write_high(&PORTB, SERVO_X);
+    if (no_of_overflows > 62)
     {
-       lcd_gotoxy(5, 0); 
-       lcd_puts("z:");
-    }
-    else
-    {
-      lcd_gotoxy(5, 0); 
-       lcd_puts("x:");
-    }
     
-    if (encodeButtVal == 0)
+      GPIO_write_low(&PORTB, SERVO_X);
+      if (no_of_overflows > 1250)
+      {
+        no_of_overflows = 0;
+  
+      }
+   }
+  }
+  else if (stepX == 1 || buttonVal == 1)
+  {
+     GPIO_write_high(&PORTB, SERVO_X);
+     if (no_of_overflows > 93)
+     {
+    
+     GPIO_write_low(&PORTB, SERVO_X);
+      if (no_of_overflows > 1250)
+      {
+       no_of_overflows = 0;
+
+      }
+  }
+  }
+else if (stepX == 2)
+  {
+     GPIO_write_high(&PORTB, SERVO_X);
+     if (no_of_overflows > 125)
+     {
+     GPIO_write_low(&PORTB, SERVO_X);
+      if (no_of_overflows > 1250)
+      {
+       no_of_overflows = 0;
+
+      }
+  }
+  }
+
+
+
+if (stepY == 0)
+  {
+    GPIO_write_high(&PORTB, SERVO_Y);
+    if (no_of_overflows > 62)
     {
-       lcd_gotoxy(5, 1); 
-       lcd_puts("z:");
-    }
-    else
-    {
-      lcd_gotoxy(5, 1); 
-       lcd_puts("y:");
-    }
-   
+    
+      GPIO_write_low(&PORTB, SERVO_Y);
+      if (no_of_overflows > 1250)
+      {
+        no_of_overflows = 0;
+  
+      }
+   }
+  }
+  else if (stepY == 1)
+  {
+     GPIO_write_high(&PORTB, SERVO_Y);
+     if (no_of_overflows > 93)
+     {
+    
+     GPIO_write_low(&PORTB, SERVO_Y);
+      if (no_of_overflows > 1250)
+      {
+       no_of_overflows = 0;
+
+      }
+  }
+  }
+else if (stepY == 2)
+  {
+     GPIO_write_high(&PORTB, SERVO_Y);
+     if (no_of_overflows > 125)
+     {
+    
+     GPIO_write_low(&PORTB, SERVO_Y);
+      if (no_of_overflows > 1250)
+      {
+       no_of_overflows = 0;
+
+      }
+  }
+  }
+
+  
+    
+
+
+
+    
 
     
     
@@ -164,8 +229,10 @@ ISR(TIMER1_OVF_vect)
  **********************************************************************/
 ISR(ADC_vect)
 {
-   static uint8_t channel = 0;
+    static uint8_t channel = 0;
     uint16_t value;
+    uint8_t out1;
+    uint8_t out2;
    
     char string[4];  // String for converted numbers by itoa()
 
@@ -179,6 +246,21 @@ ISR(ADC_vect)
     {
     value = ADC;
 
+  
+    
+    if (value < 400)
+    {
+      stepX = 0;
+    }
+    else if (value < 650)
+    {
+      stepX = 1;
+    }
+    else 
+    {
+      stepX = 2;
+    }
+    
     itoa(value, string, 10);
     lcd_gotoxy(8,0);
     lcd_puts(string);
@@ -191,6 +273,22 @@ ISR(ADC_vect)
     {
     value = ADC;
 
+    
+
+
+    if (value < 400)
+    {
+      stepY = 0;
+    }
+    else if (value < 650)
+    {
+      stepY = 1;
+    }
+    else 
+    {
+      stepY = 2;
+    }
+
     itoa(value, string, 10);
     lcd_gotoxy(8,1);
     lcd_puts(string);
@@ -198,6 +296,5 @@ ISR(ADC_vect)
     channel = 0;
     }
 
-  
     
 }
