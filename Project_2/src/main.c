@@ -14,10 +14,10 @@
 # define F_CPU 16000000 // CPU frequency in Hz required for delay funcs
 #endif
 
-#define JOYSTICK_SW PD2
+#define JOYSTICK_SW PD2 // switch
 
-#define SERVO_X PB2
-#define SERVO_Y PB3
+#define SERVO_X PB2     // servo 1
+#define SERVO_Y PB3     // servo 2
 
 
 /* Includes ----------------------------------------------------------*/
@@ -31,6 +31,7 @@
 
 volatile uint16_t stepX;
 volatile uint16_t stepY;
+volatile uint8_t channel = 0;
 
 
 
@@ -50,6 +51,8 @@ int main(void)
     lcd_init(LCD_DISP_ON);
     lcd_gotoxy(5, 0); lcd_puts("x:");
     lcd_gotoxy(5, 1); lcd_puts("y:");
+    
+    // Set pins for switch and servo 1,2 
     
     GPIO_mode_input_pullup(&DDRD, JOYSTICK_SW);
 
@@ -85,105 +88,13 @@ int main(void)
 /* Interrupt service routines ----------------------------------------*/
 /**********************************************************************
  * Function: Timer/Counter0 overflow interrupt
- * Purpose:  Use single conversion mode and start conversion every 100 ms.
+ * Purpose:  Use single conversion mode and start conversion every 16 ms.
  **********************************************************************/
 ISR(TIMER0_OVF_vect)
 {
-   static uint16_t no_of_overflows = 0;
    
   
 
-    static uint8_t buttonVal = 0;
-    buttonVal = GPIO_read(&PIND, JOYSTICK_SW);
-
-    no_of_overflows ++;
-
-  if (stepX == 0)
-  {
-    GPIO_write_high(&PORTB, SERVO_X);
-    if (no_of_overflows > 62)
-    {
-    
-      GPIO_write_low(&PORTB, SERVO_X);
-      if (no_of_overflows > 1250)
-      {
-        no_of_overflows = 0;
-  
-      }
-   }
-  }
-  else if (stepX == 1 || buttonVal == 1)
-  {
-     GPIO_write_high(&PORTB, SERVO_X);
-     if (no_of_overflows > 93)
-     {
-    
-     GPIO_write_low(&PORTB, SERVO_X);
-      if (no_of_overflows > 1250)
-      {
-       no_of_overflows = 0;
-
-      }
-  }
-  }
-else if (stepX == 2)
-  {
-     GPIO_write_high(&PORTB, SERVO_X);
-     if (no_of_overflows > 125)
-     {
-     GPIO_write_low(&PORTB, SERVO_X);
-      if (no_of_overflows > 1250)
-      {
-       no_of_overflows = 0;
-
-      }
-  }
-  }
-
-
-
-if (stepY == 0)
-  {
-    GPIO_write_high(&PORTB, SERVO_Y);
-    if (no_of_overflows > 62)
-    {
-    
-      GPIO_write_low(&PORTB, SERVO_Y);
-      if (no_of_overflows > 1250)
-      {
-        no_of_overflows = 0;
-  
-      }
-   }
-  }
-  else if (stepY == 1)
-  {
-     GPIO_write_high(&PORTB, SERVO_Y);
-     if (no_of_overflows > 93)
-     {
-    
-     GPIO_write_low(&PORTB, SERVO_Y);
-      if (no_of_overflows > 1250)
-      {
-       no_of_overflows = 0;
-
-      }
-  }
-  }
-else if (stepY == 2)
-  {
-     GPIO_write_high(&PORTB, SERVO_Y);
-     if (no_of_overflows > 125)
-     {
-    
-     GPIO_write_low(&PORTB, SERVO_Y);
-      if (no_of_overflows > 1250)
-      {
-       no_of_overflows = 0;
-
-      }
-  }
-  }
 
 }
 
