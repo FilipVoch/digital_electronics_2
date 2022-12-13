@@ -10,10 +10,15 @@
  * This work is licensed under the terms of the MIT license.
  * 
  **********************************************************************/
+#ifndef F_CPU
+# define F_CPU 16000000 // CPU frequency in Hz required for delay funcs
+#endif
+
 #define JOYSTICK_SW PD2
 
 #define SERVO_X PB2
 #define SERVO_Y PB3
+
 
 /* Includes ----------------------------------------------------------*/
 #include <avr/io.h>         // AVR device-specific IO definitions
@@ -24,8 +29,8 @@
 #include <lcd.h>            // Peter Fleury's LCD library
 #include <stdlib.h>         // C library. Needed for number conversions
 
-volatile int stepX;
-volatile int stepY;
+volatile uint16_t stepX;
+volatile uint16_t stepY;
 
 
 
@@ -179,13 +184,6 @@ else if (stepY == 2)
       }
   }
   }
-
-  
-    
-
-
-
-  
 
 }
 
