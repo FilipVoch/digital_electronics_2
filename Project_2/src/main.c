@@ -11,7 +11,7 @@
  * 
  **********************************************************************/
 #ifndef F_CPU
-# define F_CPU 16000000 // CPU frequency in Hz required for delay funcs
+#define F_CPU 16000000 // CPU frequency in Hz required for delay funcs
 #endif
 
 #define JOYSTICK_SW PD2 // switch
