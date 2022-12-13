@@ -53,24 +53,8 @@ int main(void)
     
 
 
-    // Configure Analog-to-Digital Convertion unit
-    // Select ADC voltage reference to "AVcc with external capacitor at AREF pin"
-    ADMUX |= (1 << REFS0);
-    ADMUX &= ~(1 << REFS1);
-
-    // Select input channel ADC0 (voltage divider pin)
-   
-    // Enable ADC module
-    ADCSRA |= (1 << ADEN);
-    // Enable conversion complete interrupt
-    ADCSRA |= (1 << ADIE);
-    // Set clock prescaler to 128
-    ADCSRA |= ((1 << ADPS0) | (1 << ADPS1) | (1 << ADPS2));
-
     
-
-   // Select input channel ADC1 (voltage divider pin)
-    //ADMUX |= ((1 << MUX0) | (0 << MUX1) | (0 << MUX2) | (0 << MUX3));
+    
     
 
     // Configure 16-bit Timer/Counter0 to start ADC conversion
