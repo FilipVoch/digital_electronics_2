@@ -20,14 +20,14 @@
 #include <avr/interrupt.h>  // Interrupts standard C library for AVR-GCC
 #include <gpio.h>           // GPIO library for AVR-GCC
 #include "timer.h"          // Timer library for AVR-GCC
+#include <util/delay.h>     // Functions for busy-wait delay loops
 #include <lcd.h>            // Peter Fleury's LCD library
 #include <stdlib.h>         // C library. Needed for number conversions
 
 volatile int stepX;
 volatile int stepY;
 
-#define PB2 10        // In Arduino world, PB5 is called "13"
-#define PB3 11 
+
 
 /* Function definitions ----------------------------------------------*/
 /**********************************************************************
@@ -73,9 +73,9 @@ int main(void)
     //ADMUX |= ((1 << MUX0) | (0 << MUX1) | (0 << MUX2) | (0 << MUX3));
     
 
-    // Configure 16-bit Timer/Counter1 to start ADC conversion
-    // Set prescaler to 33 ms and enable overflow interrupt
-    TIM0_overflow_16us();
+    // Configure 16-bit Timer/Counter0 to start ADC conversion
+    // Set prescaler to 16 ms and enable overflow interrupt
+    TIM0_overflow_16ms();
     TIM0_overflow_interrupt_enable();
 
     // Enables interrupts by setting the global interrupt mask
@@ -102,22 +102,7 @@ ISR(TIMER0_OVF_vect)
 {
    static uint16_t no_of_overflows = 0;
    
-   // ADC
-   static uint8_t channel = 0;
-   if (channel == 0)
-   {
-    ADMUX &= ~((1 << MUX0) | (1 << MUX1) | (1 << MUX2) | (1 << MUX3));
-    channel = 1;
-   }
-   else
-   {
-    ADMUX &= ~((1 << MUX1) | (1 << MUX2) | (1 << MUX3));
-    ADMUX |= (1 << MUX0);
-    channel = 0;
-   }
-    
-   // Start ADC conversion
-    ADCSRA |= (1 << ADSC);
+  
 
     static uint8_t buttonVal = 0;
     buttonVal = GPIO_read(&PIND, JOYSTICK_SW);
@@ -216,85 +201,7 @@ else if (stepY == 2)
 
 
 
-    
-
-    
-    
-
-}
-
-/**********************************************************************
- * Function: ADC complete interrupt
- * Purpose:  Display converted value on LCD screen.
- **********************************************************************/
-ISR(ADC_vect)
-{
-    static uint8_t channel = 0;
-    uint16_t value;
-    uint8_t out1;
-    uint8_t out2;
-   
-    char string[4];  // String for converted numbers by itoa()
-
-    // Read converted value
-    // Note that, register pair ADCH and ADCL can be read as a 16-bit value ADC
-    
-    //value = ADC;
-    // Convert "value" to "string" and display it
-
-    if (channel == 0)
-    {
-    value = ADC;
-
   
-    
-    if (value < 400)
-    {
-      stepX = 0;
-    }
-    else if (value < 650)
-    {
-      stepX = 1;
-    }
-    else 
-    {
-      stepX = 2;
-    }
-    
-    itoa(value, string, 10);
-    lcd_gotoxy(8,0);
-    lcd_puts(string);
 
-    channel = 1;
-    }
-    
-    else if (channel == 1)
-    
-    {
-    value = ADC;
-
-    
-
-
-    if (value < 400)
-    {
-      stepY = 0;
-    }
-    else if (value < 650)
-    {
-      stepY = 1;
-    }
-    else 
-    {
-      stepY = 2;
-    }
-
-    itoa(value, string, 10);
-    lcd_gotoxy(8,1);
-    lcd_puts(string);
-
-    channel = 0;
-    }
-
-    
 }
+
