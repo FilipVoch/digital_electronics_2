@@ -41,7 +41,7 @@ int main(void)
     TCCR1A |= (1 << WGM11);                  
     TCCR1B |= (1 << WGM13);
 
-    // Setting of the compare registers A and B 
+    // Setting of the Timer1 register
     TCCR1A |= (1 << COM0A1) | (1 << COM0B1); 
 
     // TOP value setting
