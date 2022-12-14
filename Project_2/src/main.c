@@ -1,100 +1,118 @@
 /***********************************************************************
  * 
- * Use Analog-to-digital conversion to read push buttons on LCD keypad
- * shield and display it on LCD screen.
  * 
  * ATmega328P (Arduino Uno), 16 MHz, PlatformIO
  *
- * Copyright (c) 2018 Tomas Fryza
+ * Copyright (c) 2022 Tomas Fryza
  * Dept. of Radio Electronics, Brno University of Technology, Czechia
  * This work is licensed under the terms of the MIT license.
  * 
  **********************************************************************/
-#ifndef F_CPU
-#define F_CPU 16000000 // CPU frequency in Hz required for delay funcs
-#endif
 
-#define JOYSTICK_SW PD2 // switch
+#define SERVO_X PB1 
+#define SERVO_Y PB2
+#define POSITION_2 10
+#define POSITION_1 1250
 
-#define SERVO_X PB2     // servo 1
-#define SERVO_Y PB3     // servo 2
-
-
-/* Includes ----------------------------------------------------------*/
 #include <avr/io.h>         // AVR device-specific IO definitions
 #include <avr/interrupt.h>  // Interrupts standard C library for AVR-GCC
 #include <gpio.h>           // GPIO library for AVR-GCC
 #include "timer.h"          // Timer library for AVR-GCC
-#include <util/delay.h>     // Functions for busy-wait delay loops
-#include <lcd.h>            // Peter Fleury's LCD library
 #include <stdlib.h>         // C library. Needed for number conversions
 
-volatile uint16_t stepX;
-volatile uint16_t stepY;
-volatile uint8_t channel = 0;
-
-
-
-/* Function definitions ----------------------------------------------*/
-/**********************************************************************
- * Function: Main function where the program execution begins
- * Purpose:  Use Timer/Counter1 and start ADC conversion every 100 ms.
- *           When AD conversion ends, send converted value to LCD screen.
- * Returns:  none
- **********************************************************************/
-
+volatile uint16_t servo_x = POSITION_1;
+volatile uint16_t servo_y = POSITION_2;
 
 int main(void)
 {
-    // Initialize display
-    
-    lcd_init(LCD_DISP_ON);
-    lcd_gotoxy(5, 0); lcd_puts("x:");
-    lcd_gotoxy(5, 1); lcd_puts("y:");
-    
-    // Set pins for switch and servo 1,2 
-    
-    GPIO_mode_input_pullup(&DDRD, JOYSTICK_SW);
-
-    GPIO_mode_output(&DDRB, SERVO_X);
-    GPIO_mode_output(&DDRB, SERVO_Y);
-    
-
-
-    
-    
-    
-
-    // Configure 16-bit Timer/Counter0 to start ADC conversion
+    // Configure 8-bit Timer/Counter0 to control servo motors
     // Set prescaler to 16 ms and enable overflow interrupt
     TIM0_overflow_16ms();
     TIM0_overflow_interrupt_enable();
 
+    GPIO_mode_output(&DDRB, SERVO_X);        // servo 1
+    GPIO_mode_output(&DDRB, SERVO_Y);        // servo 2
+
+    TCCR1A |= (1 << WGM11);                  
+    TCCR1B |= (1 << WGM13);
+
+    TCCR1A |= (1 << COM0A1) | (1 << COM0B1); 
+
+    ICR1 = 2500;
+                      
+    OCR1A = servo_x;
+    OCR1B = servo_y;
+    
+    TCCR1B |= (1 << CS11) | (1 << CS10 ); 
+
+    PCICR |= (1<<PCIE0);                   
+    PCMSK0 |= (1<<PCINT0);                 
+  
+
     // Enables interrupts by setting the global interrupt mask
     sei();
-
+    
     // Infinite loop
     while (1)
     {
         /* Empty loop. All subsequent operations are performed exclusively 
-         * inside interrupt service routines ISRs */
+         * inside interrupt service routines, ISRs */
     }
 
     // Will never reach this
     return 0;
 }
 
-
 /* Interrupt service routines ----------------------------------------*/
 /**********************************************************************
- * Function: Timer/Counter0 overflow interrupt
- * Purpose:  Use single conversion mode and start conversion every 16 ms.
+ * Function: Timer0 overflow interrupt
+ * Purpose:  Use single conversion mode and start conversion every 33 ms.
  **********************************************************************/
+
 ISR(TIMER0_OVF_vect)
 {
-   
-  
+    static uint8_t servo_x_step = 0;        
+    static uint8_t servo_y_step = 0;
+    static uint8_t increment = 1;   
 
+    if (servo_x == POSITION_1)      
+      {
+        servo_x_step = 1;           
+      }
+    else if (servo_x == POSITION_2) 
+      {
+        servo_x_step = 0;          
+      }
+       
+    if (servo_x_step == 0)
+      {
+        servo_x += increment;              
+      }
+        
+    if (servo_x_step == 1)
+      {
+        servo_x -= increment;               
+      }
+    OCR1A = servo_x;                
+       
+      
+    if (servo_y == POSITION_1)      
+      {
+        servo_y_step = 1;              
+      }
+    else if (servo_y == POSITION_2) 
+      {
+        servo_y_step = 0;               
+      }
+       
+    if (servo_y_step == 0)
+      {
+        servo_y += increment + 1;               
+      }
 
+    if (servo_y_step == 1)
+      {
+        servo_y -= increment + 1;                
+      }
+    OCR1B = servo_y;                  
 }
-
