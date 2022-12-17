@@ -92,12 +92,11 @@ V projekte využívame phase correct PWM (pulse width modulation), ktorá je be�
 }
 
    ```
-![FlowServopdf-1](https://user-images.githubusercontent.com/99683944/207745250-ad46fee8-b30d-4fe5-8392-23e8b9112708.png)
 
+![FlowServoEnd](https://user-images.githubusercontent.com/99683944/208240359-0c33f6be-b8f2-423b-b898-c0994acb605e.png)
 
 ## Video
 
-https://vutbr-my.sharepoint.com/:v:/g/personal/xvochf00_vutbr_cz/EftdjPptxA1IounfKJraNU8BMRi60qrpi-SjOBW3wFwCCw?e=wMrCGt
 
 ## References
 
